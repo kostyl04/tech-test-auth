@@ -5,12 +5,11 @@ import com.visionmate.auth.domain.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Objects.nonNull;
 import static org.hibernate.Hibernate.unproxy;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +19,7 @@ public class UserFactory {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional(isolation = SERIALIZABLE)
+    @Transactional(isolation = REPEATABLE_READ)
     public User create(User user) {
         userService.checkUser(user);
         if (nonNull(user.getRole())) {

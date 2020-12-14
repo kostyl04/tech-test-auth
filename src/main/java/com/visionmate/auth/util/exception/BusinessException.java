@@ -1,11 +1,14 @@
 package com.visionmate.auth.util.exception;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
+@Getter
 public abstract class BusinessException extends RuntimeException {
 
     private final String code;

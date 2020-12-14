@@ -8,8 +8,20 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
     open-in-view: true
   datasource:
-    url: jdbc:mysql://localhost:3306/auth
+    url: jdbc:mysql://auth-db:3306/auth
     username: root
     password: root
     hikari:
       initialization-fail-timeout: 10000
+
+jwt:
+  ttl-hours: 2
+  issuer: auth-servie
+  audience: auth-service
+  key: "998BFBBDCC3941FDF325A68A059154E8"
+  token-header: Authorization
+  token-prefix: Bearer
+
+logging:
+  file:
+    path: logs

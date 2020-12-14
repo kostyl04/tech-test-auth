@@ -14,3 +14,13 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - 3306:3306
+
+  auth-app:
+    image: auth:0.0.1-SNAPSHOT
+    depends_on:
+      - auth-db
+      - flyway
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/workspace/logs

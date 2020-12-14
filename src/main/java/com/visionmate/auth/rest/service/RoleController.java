@@ -1,12 +1,24 @@
 package com.visionmate.auth.rest.service;
 
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.*;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.visionmate.auth.domain.entity.Role;
 import com.visionmate.auth.domain.service.RoleService;
 import com.visionmate.auth.rest.model.ApiRole;
 import com.visionmate.auth.util.mapper.Mapper;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -22,6 +34,7 @@ public class RoleController {
 
     @PostMapping
     @ResponseStatus(CREATED)
+    @PreAuthorize("hasAuthority('ALL')")
     public ApiRole create(@RequestBody ApiRole apiRole) {
         Role newRole = mapper.map(apiRole, Role.class);
         newRole.setId(null);
@@ -31,6 +44,7 @@ public class RoleController {
 
     @PutMapping("/{id}")
     @ResponseStatus(OK)
+    @PreAuthorize("hasAuthority('ALL')")
     public ApiRole update(@PathVariable Integer id, @RequestBody ApiRole apiRole) {
         Role role = mapper.map(apiRole, Role.class);
         role.setId(id);
@@ -40,6 +54,7 @@ public class RoleController {
 
     @GetMapping
     @ResponseStatus(OK)
+    @PreAuthorize("hasAuthority('ALL')")
     public List<ApiRole> getRoles() {
         List<Role> roles = roleService.getRoles();
         return mapper.mapToList(roles, ApiRole.class);
@@ -47,6 +62,7 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
+    @PreAuthorize("hasAuthority('ALL')")
     public void delete(@PathVariable Integer id) {
         roleService.deleteById(id);
     }

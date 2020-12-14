@@ -4,8 +4,8 @@ import com.visionmate.auth.domain.entity.Permission;
 import com.visionmate.auth.domain.entity.Role;
 import com.visionmate.auth.domain.repository.PermissionRepository;
 import com.visionmate.auth.domain.repository.RoleRepository;
-import com.visionmate.auth.util.exception.BadParameter;
-import com.visionmate.auth.util.exception.EntityNotFound;
+import com.visionmate.auth.util.exception.BadParameterException;
+import com.visionmate.auth.util.exception.EntityNotFoundException;
 import com.visionmate.auth.util.mapper.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class RoleService {
 
     public Role update(Role role) {
         if (!existsById(role.getId())) {
-            throw new EntityNotFound("role.not.found", role.getId());
+            throw new EntityNotFoundException("role.not.found", role.getId());
         }
         validateRole(role);
         Set<Permission> permissions = permissionRepository.getByIdIn(role.getPermissions().stream()
@@ -66,7 +66,7 @@ public class RoleService {
     private void checkPermissionExistence(Role role, Set<Permission> permissions) {
         if (!permissions.equals(role.getPermissions())) {
             role.getPermissions().removeAll(permissions);
-            throw new BadParameter("nonexistent.permissions", role.getPermissions().stream()
+            throw new BadParameterException("nonexistent.permissions", role.getPermissions().stream()
                     .map(Permission::getId)
                     .collect(toList())
             );
@@ -75,15 +75,15 @@ public class RoleService {
 
     private void validateRole(Role role) {
         if (isEmpty(role.getName())) {
-            throw new BadParameter("role.name.could.not.be.null");
+            throw new BadParameterException("role.name.could.not.be.null");
         }
         if (nonNull(role.getId())) {
             if (roleRepository.existsByNameAndIdNot(role.getName(), role.getId())) {
-                throw new BadParameter("role.name.already.exists", role.getName());
+                throw new BadParameterException("role.name.already.exists", role.getName());
             }
         } else {
             if (roleRepository.existsByName(role.getName())) {
-                throw new BadParameter("role.name.already.exists", role.getName());
+                throw new BadParameterException("role.name.already.exists", role.getName());
             }
         }
     }
